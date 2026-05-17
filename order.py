@@ -1,3 +1,11 @@
+import collections
+
+def consume(it):
+   collections.deque(it, maxlen=0)
+
+def action_if(f, g, it):
+     consume(f(i) for i in it if g(i))
+
 class Order:
     
       order = []
@@ -7,6 +15,15 @@ class Order:
       expedited: bool = False
       shipped: bool = False
       customer: object = None
+      order_items: list
+
+      def __init__(self, orderid, shipping_address, expedited, shipped, customer, order_items):
+       self.orderid = orderid
+       self.shipping_address = shipping_address
+       self.expedited = expedited
+       self.shipped = shipped
+       self.customer = customer
+       self.orde_items = order_items
       
       @staticmethod
       def test_expedited(order):
@@ -89,3 +106,11 @@ class Order:
       def set_order_expedited(orderid):
           for order in Order.get_order_by_id(orderid):
              order.expedited = True
+      
+      @staticmethod
+      def notify_backordered(orders, msg):
+       action_if(
+           lambda o: o.customer.notify(o.customer, msg),
+           lambda o: any(i.backordered for i in o.order_items),
+           orders
+       )
