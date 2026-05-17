@@ -1,4 +1,7 @@
-import collections
+from collections import deque, namedtuple
+from dataclasses import dataclass, field
+from order_item import OrderItem
+from customer import Customer
 
 def consume(it):
    collections.deque(it, maxlen=0)
@@ -50,7 +53,7 @@ class Order:
             return list(map(func, it))
       @staticmethod
       def get_filtered_info(predicate, func, orders):
-            return Order.map(func, Order.filter(predicate, orders))
+            return map(func, Order.filter(predicate, orders))
      
 
       @staticmethod
@@ -98,10 +101,8 @@ class Order:
                order.expedited = True
       @staticmethod
       def get_order_by_id(orderid):
-         return Order.get_filtered_info(
-            lambda order: order.orderid == orderid,
-            lambda order: order
-         )
+         return filter(
+            lambda order: order.orderid == orderid)
       @staticmethod
       def set_order_expedited(orderid):
           for order in Order.get_order_by_id(orderid):
@@ -114,3 +115,9 @@ class Order:
            lambda o: any(i.backordered for i in o.order_items),
            orders
        )
+
+      @staticmethod
+      def get_order_details(orders):
+        d = namedtuple('OrderDetails', 'orderid, customer, expedited, itemnumber, item, total_price, backordered')
+        return (d(o.orderid, o.customer.name, o.expedited, i.itemnumber, i.name, i.price * i.quantity, i.backordered)
+             for o in orders for i in o.order_items)
