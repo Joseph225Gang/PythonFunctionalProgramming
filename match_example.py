@@ -31,7 +31,7 @@ for i in range(5):
     match i:
        case 1 | 3 | 5 if i < 4:
            print (f'{i} is odd and less than 4')
-       case 1 | 3 | 5 if i > 4
+       case 1 | 3 | 5 if i > 4:
            print (f'{i} is odd and greater than 4')
        case 2 | 4:
             print (f'{i} is even')
